@@ -3,6 +3,13 @@ src/
 tsconfig.json
 tslint.json
 
+# Exclude test files
+*.spec.js
+*.spec.js.map
+
+# Exclude GeoLite2 databases
+geolite2/
+
 # Lockfiles should not be in final package
 yarn.lock
 

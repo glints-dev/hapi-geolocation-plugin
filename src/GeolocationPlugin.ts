@@ -1,5 +1,4 @@
-import * as Hapi from 'hapi';
-import { get } from 'lodash';
+import * as Hapi from '@hapi/hapi';
 import * as Maxmind from 'maxmind';
 
 export interface GeolocationPluginOptions {
@@ -7,14 +6,14 @@ export interface GeolocationPluginOptions {
 }
 
 export interface GeolocationPluginRequestState {
-  country: string;
+  country?: string;
 }
 
 interface GeolocationPluginProperties {
-  reader: Maxmind.Reader;
+  reader: Maxmind.Reader<Maxmind.CountryResponse>;
 }
 
-declare module 'hapi' {
+declare module '@hapi/hapi' {
   interface PluginsListRegistered {
     GeolocationPlugin: Hapi.PluginRegistered;
   }
@@ -28,21 +27,12 @@ declare module 'hapi' {
   }
 }
 
-const GeolocationPlugin: Hapi.Plugin<GeolocationPluginOptions> = {
+const GeolocationPlugin: Hapi.Plugin<GeolocationPluginOptions> & Hapi.PluginNameVersion = {
   name: 'GeolocationPlugin',
   register: async (server, options) => {
     // Open the country database from Maxmind.
     // Can be downloaded from: https://dev.maxmind.com/geoip/geoip2/geolite2/
-    const reader = await new Promise<Maxmind.Reader>((resolve, reject) => {
-      Maxmind.open(options.dbPath, (err, reader) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(reader);
-        }
-      });
-    });
-
+    const reader = await Maxmind.open(options.dbPath);
     server.expose('reader', reader);
 
     // Set the discovered country property.
@@ -50,7 +40,7 @@ const GeolocationPlugin: Hapi.Plugin<GeolocationPluginOptions> = {
       const reader = request.server.plugins.GeolocationPlugin.reader;
       const response = reader.get(request.info.remoteAddress);
       request.plugins.GeolocationPlugin = {
-        country: get(response, 'country.iso_code'),
+        country: response?.country?.iso_code,
       };
       return h.continue;
     });

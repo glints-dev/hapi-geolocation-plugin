@@ -11,26 +11,32 @@
   "scripts": {
     "build": "tsc --declaration",
     "clean": "rm -r dist/",
-    "tslint": "tslint --project ."
+    "tslint": "tslint --project .",
+    "test": "mocha --require ts-node/register/type-check --recursive \"src/**/*.spec.ts\""
+  },
+  "engines": {
+    "node": ">= 10"
   },
   "devDependencies": {
-    "@glints/tslint-rules": "^1.0.5",
-    "@types/hapi": "^17.0.19",
-    "@types/lodash": "^4.14.116",
-    "@types/maxmind": "^2.0.4",
-    "hapi": "^17.5.4",
-    "ts-node": "^7.0.1",
-    "tslint": "^5.11.0",
-    "typescript": "^3.0.3"
+    "@glints/tslint-rules": "^1.0.6",
+    "@hapi/hapi": "^18.4.0",
+    "@types/hapi__hapi": "^18.2.6",
+    "@types/maxmind": "^2.0.5",
+    "@types/mocha": "^5.2.7",
+    "@types/sinon": "^7.5.0",
+    "mocha": "^6.2.2",
+    "sinon": "^7.5.0",
+    "ts-node": "^8.4.1",
+    "tslint": "^5.20.1",
+    "typescript": "^3.7.2"
   },
   "peerDependencies": {
-    "hapi": ">= 17"
+    "@hapi/hapi": ">= 18"
   },
   "publishConfig": {
     "access": "public"
   },
   "dependencies": {
-    "lodash": "^4.17.11",
-    "maxmind": "^2.7.0"
+    "maxmind": "^4.0.0"
   }
 }
